@@ -15,8 +15,7 @@ function tbl = cleanTitanic(tbl)
 
     fare = grpstats(tbl(:,{'Pclass','Fare','Embarked'}),{'Pclass','Embarked'}, 'nanmean');
     for i = 1 : height(fare)
-        % replace NaN with average fare based on class and embarked to
-        % missing values (only for training set)
+        % replace NaN with average fare based on class and embarked to missing values
         tbl.Fare(isnan(tbl.Fare) & tbl.Pclass == fare.Pclass(i) & tbl.Embarked == fare.Embarked(i)) = fare.nanmean_Fare(i);
     end
     tbl.FareRange = discretize(tbl.Fare, [0:10:30, 100, 520], 'categorical', {'<10','10-20','20-30','30-100','>100'});
