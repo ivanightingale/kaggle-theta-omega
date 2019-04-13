@@ -4,16 +4,19 @@ function tbl = cleanTitanic(tbl)
 
     tbl.Sex = double(tbl.Sex);
     
-    tbl.Age(isnan(tbl.Age)) = nanmean(tbl.Age);  % replace NaN with mean
+    % replace NaN age with mean
+    tbl.Age(isnan(tbl.Age)) = nanmean(tbl.Age);
     % categorize age groups
     tbl.AgeGroup = discretize(tbl.Age, [0:10:20, 65, 80], 'categorical', {'child','teen','adult','senior'});
 
-    tbl.Embarked(isundefined(tbl.Embarked)) = mode(tbl.Embarked);  % replace undefined with mode
+    % replace undefined with mode
+    tbl.Embarked(isundefined(tbl.Embarked)) = mode(tbl.Embarked);
     tbl.Embarked = double(tbl.Embarked);
 
     fare = grpstats(tbl(:,{'Pclass','Fare','Embarked'}),{'Pclass','Embarked'}, 'nanmean');
     for i = 1 : height(fare)
-        % replace NaN with average fare based on class and embarked to missing values
+        % replace NaN with average fare based on class and embarked to
+        % missing values (only for training set)
         tbl.Fare(isnan(tbl.Fare) & tbl.Pclass == fare.Pclass(i) & tbl.Embarked == fare.Embarked(i)) = fare.nanmean_Fare(i);
     end
     tbl.FareRange = discretize(tbl.Fare, [0:10:30, 100, 520], 'categorical', {'<10','10-20','20-30','30-100','>100'});
